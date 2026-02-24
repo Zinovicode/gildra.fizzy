@@ -23,7 +23,8 @@ GIT
 
 GIT
   remote: https://github.com/basecamp/lexxy
-  revision: 4bcf8d0213971560e90734493f8bd835addc3642
+  revision: 501d66089f43a39a0176f4a9cd5b4bf0f67ecc54
+  branch: safari-selection-bug
   specs:
     lexxy (0.7.4.beta)
       rails (>= 8.0.2)
