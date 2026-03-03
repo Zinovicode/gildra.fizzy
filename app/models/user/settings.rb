@@ -4,7 +4,7 @@ class User::Settings < ApplicationRecord
 
   enum :bundle_email_frequency, %i[ never every_few_hours daily weekly ],
     default: :every_few_hours, prefix: :bundle_email
-  enum :push_notification_level, %i[ only_mentions comments_and_mentions all_activity ],
+  enum :push_notification_level, %i[ all_activity comments_and_mentions only_mentions ],
     default: :all_activity, prefix: :push_notifications
 
   after_update :review_pending_bundles, if: :saved_change_to_bundle_email_frequency?

@@ -539,7 +539,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_03_03_100000) do
     t.uuid "account_id", null: false
     t.integer "bundle_email_frequency", default: 0, null: false
     t.datetime "created_at", null: false
-    t.integer "push_notification_level", default: 2, null: false
+    t.integer "push_notification_level", default: 0, null: false
     t.string "timezone_name", limit: 255
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
