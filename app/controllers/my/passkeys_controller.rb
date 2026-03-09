@@ -15,9 +15,7 @@ class My::PasskeysController < ApplicationController
       challenge: session.delete(:webauthn_challenge)
     )
 
-    render json: { location: edit_my_passkey_path(passkey, created: true) }
-  rescue ActionPack::WebAuthn::InvalidAuthenticationResponseError => error
-    render json: { error: error.message }, status: :unprocessable_entity
+    redirect_to edit_my_passkey_path(passkey, created: true)
   end
 
   def edit
