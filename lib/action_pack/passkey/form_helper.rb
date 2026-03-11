@@ -1,12 +1,40 @@
+# View helpers for rendering passkey forms and meta tags.
+#
+# Include this module in your helper or ApplicationHelper to get access to:
+#
+# - +passkey_creation_options_meta_tag+ / +passkey_request_options_meta_tag+ — render a <meta>
+#   tag containing the JSON-serialized WebAuthn options for the browser credential API.
+# - +create_passkey_button+ — render a form with hidden fields for the registration ceremony.
+# - +sign_in_with_passkey_button+ — render a form with hidden fields for the authentication
+#   ceremony.
+#
+# These helpers are designed to pair with a Stimulus controller (or similar) that reads the
+# meta tag options, calls the browser WebAuthn API, and fills in the hidden fields before
+# submitting the form.
 module ActionPack::Passkey::FormHelper
+  # Renders a +<meta>+ tag containing JSON-serialized creation options for the WebAuthn
+  # registration ceremony. The companion Stimulus controller reads this tag to call
+  # +navigator.credentials.create()+.
   def passkey_creation_options_meta_tag(creation_options)
     tag.meta(name: "passkey-creation-options", content: creation_options.to_json)
   end
 
+  # Renders a +<meta>+ tag containing JSON-serialized request options for the WebAuthn
+  # authentication ceremony. The companion Stimulus controller reads this tag to call
+  # +navigator.credentials.get()+.
   def passkey_request_options_meta_tag(request_options)
     tag.meta(name: "passkey-request-options", content: request_options.to_json)
   end
 
+  # Renders a form with hidden fields for the passkey registration ceremony. The form POSTs to
+  # +url+ and includes hidden fields for +client_data_json+, +attestation_object+, and
+  # +transports+ — populated by the Stimulus controller after the browser credential API
+  # resolves. Accepts a +label+ string or a block for button content.
+  #
+  # Options:
+  # - +param+: the form parameter namespace (default: +:passkey+)
+  # - +form+: additional HTML attributes for the +<form>+ tag
+  # - All other options are passed to the +<button>+ tag
   def create_passkey_button(label = nil, url, param: :passkey, form: {}, **options, &block)
     button_content = block ? capture(&block) : label
     form_options = form.reverse_merge(method: :post, action: url, class: "button_to")
@@ -22,6 +50,16 @@ module ActionPack::Passkey::FormHelper
     end
   end
 
+  # Renders a form with hidden fields for the passkey authentication ceremony. The form POSTs to
+  # +url+ and includes hidden fields for +id+, +client_data_json+, +authenticator_data+, and
+  # +signature+ — populated by the Stimulus controller after the browser credential API resolves.
+  # Accepts a +label+ string or a block for button content.
+  #
+  # Options:
+  # - +param+: the form parameter namespace (default: +:passkey+)
+  # - +mediation+: WebAuthn mediation hint (e.g. +"conditional"+ for autofill-assisted sign in)
+  # - +form+: additional HTML attributes for the +<form>+ tag
+  # - All other options are passed to the +<button>+ tag
   def sign_in_with_passkey_button(label = nil, url, param: :passkey, mediation: nil, form: {}, **options, &block)
     button_content = block ? capture(&block) : label
     form_data = {}

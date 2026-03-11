@@ -1,7 +1,44 @@
+# Adds passkey support to an Active Record model (the "holder" of passkeys).
+#
+# == Usage
+#
+#   class User < ApplicationRecord
+#     include ActionPack::Passkey::Holder
+#
+#     has_passkeys
+#   end
+#
+# This sets up a polymorphic +has_many :passkeys+ association and defines two methods on the
+# model that supply holder-specific options for the WebAuthn ceremonies:
+#
+# - +passkey_creation_options+ — merged into ActionPack::Passkey.creation_options
+# - +passkey_request_options+ — merged into ActionPack::Passkey.request_options
+#
+# == Options
+#
+# +has_passkeys+ accepts keyword arguments that map to WebAuthn creation or request option
+# fields. Values can be symbols (sent to the record), procs (evaluated in the record's context),
+# or plain values:
+#
+#   has_passkeys name: :email, display_name: :name
+#
+# For more complex configuration, pass a block that receives a ActionPack::Passkey::Holder::Config:
+#
+#   has_passkeys do |config|
+#     config.creation_options { { name: email, display_name: name } }
+#     config.request_options  { { user_verification: "required" } }
+#   end
 module ActionPack::Passkey::Holder
   extend ActiveSupport::Concern
 
   class_methods do
+    # Declares that this model can hold passkeys. Sets up a polymorphic +has_many+ association
+    # and defines +passkey_creation_options+ and +passkey_request_options+ instance methods used
+    # by ActionPack::Passkey to build ceremony options.
+    #
+    # Keyword arguments matching CreationOptions or RequestOptions fields are extracted and
+    # turned into holder-scoped option procs automatically. An optional block yields a Config
+    # for more complex setup.
     def has_passkeys(**options, &block)
       config = Config.new(**options)
       block&.call(config)
@@ -24,6 +61,8 @@ module ActionPack::Passkey::Holder
     end
   end
 
+  # Configuration object yielded by +has_passkeys+ when a block is given. Allows setting
+  # custom association options and ceremony option blocks.
   class Config
     attr_accessor :association_name, :dependent
 
@@ -40,18 +79,28 @@ module ActionPack::Passkey::Holder
       end
     end
 
+    # Sets a block to evaluate in the holder's context to produce additional request options.
+    #
+    #   config.request_options { { user_verification: "required" } }
     def request_options(&block)
       @request_options = block
     end
 
+    # Sets a block to evaluate in the holder's context to produce additional creation options.
+    #
+    #   config.creation_options { { name: email, display_name: name } }
     def creation_options(&block)
       @creation_options = block
     end
 
+    # Evaluates the request options block (if any) in the context of the given +record+. Called
+    # internally by the +passkey_request_options+ method defined on the holder.
     def evaluate_request_options(record)
       record.instance_exec(&@request_options) if @request_options
     end
 
+    # Evaluates the creation options block (if any) in the context of the given +record+. Called
+    # internally by the +passkey_creation_options+ method defined on the holder.
     def evaluate_creation_options(record)
       record.instance_exec(&@creation_options) if @creation_options
     end
