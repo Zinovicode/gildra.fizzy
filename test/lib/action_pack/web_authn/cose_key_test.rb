@@ -4,41 +4,41 @@ class ActionPack::WebAuthn::CoseKeyTest < ActiveSupport::TestCase
   # All CBOR data generated with Python cbor2 v5.8.0
 
   # EC2/ES256 P-256 public key (32-byte x and y coordinates)
-  EC2_X = ["2ba472104c686f39d4b623cc9324953e7053b47cae818e8cf774203a4f51af71"].pack("H*")
-  EC2_Y = ["69cb8ac519bdd929e2bdbe79e9f9b8d14c2d89a7cbd324647a1ccd68b8de3ca0"].pack("H*")
+  EC2_X = [ "2ba472104c686f39d4b623cc9324953e7053b47cae818e8cf774203a4f51af71" ].pack("H*")
+  EC2_Y = [ "69cb8ac519bdd929e2bdbe79e9f9b8d14c2d89a7cbd324647a1ccd68b8de3ca0" ].pack("H*")
 
   # CBOR: {1: 2, 3: -7, -1: 1, -2: <x 32 bytes>, -3: <y 32 bytes>}
-  EC2_CBOR = ["a50102032620012158202ba472104c686f39d4b623cc9324953e7053b47cae81" \
+  EC2_CBOR = [ "a50102032620012158202ba472104c686f39d4b623cc9324953e7053b47cae81" \
     "8e8cf774203a4f51af7122582069cb8ac519bdd929e2bdbe79e9f9b8d14c2d89a7cbd324" \
-    "647a1ccd68b8de3ca0"].pack("H*")
+    "647a1ccd68b8de3ca0" ].pack("H*")
 
   # Ed25519 public key (32 bytes)
-  ED25519_X = ["a95ee02872a2c5224b394832767bea746620e50776e845872228716065f16005"].pack("H*")
+  ED25519_X = [ "a95ee02872a2c5224b394832767bea746620e50776e845872228716065f16005" ].pack("H*")
 
   # CBOR: {1: 1, 3: -8, -1: 6, -2: <x 32 bytes>}
-  OKP_CBOR = ["a4010103272006215820a95ee02872a2c5224b394832767bea746620e50776e8" \
-    "45872228716065f16005"].pack("H*")
+  OKP_CBOR = [ "a4010103272006215820a95ee02872a2c5224b394832767bea746620e50776e8" \
+    "45872228716065f16005" ].pack("H*")
 
   # RSA 2048-bit public key (256-byte modulus, 3-byte exponent 65537)
-  RSA_N = ["d388adb3aa7812402281c57ce870821b17558f0a247a771834892d85399ecd4f" \
+  RSA_N = [ "d388adb3aa7812402281c57ce870821b17558f0a247a771834892d85399ecd4f" \
     "830dd35f65e7afe5030d9ee10f4873567039976486202cce8ac499114194d32fe615026e" \
     "7eeee5b2ff564041d68b9b33c35a2ac17210c69c9e85fa74249b06e4ffa6b38ff5ef54e" \
     "1860aa59a6fb043e2b65ecf0ce8d0ff90d25683ca2da016618308f3fa7f74efc178ec46" \
     "e0224f10cf0eed7d46cc6167210f088cc6b77fc08a7fcd14536aa9c726519806a96ea00" \
     "517ce1ed1336ae6962338a6c4cc4754d953ebbffb5d6b1bc76368b552b628adb788b0bc" \
     "9f895dff6b1c74d79ce210b5941995beb1f498a1e9123666bdc92bc6b0f2a04fdb40cf1" \
-    "d253ba1582673ec293113"].pack("H*")
-  RSA_E = ["010001"].pack("H*")
+    "d253ba1582673ec293113" ].pack("H*")
+  RSA_E = [ "010001" ].pack("H*")
 
   # CBOR: {1: 3, 3: -257, -1: <n 256 bytes>, -2: <e 3 bytes>}
-  RSA_CBOR = ["a401030339010020590100d388adb3aa7812402281c57ce870821b17558f0a24" \
+  RSA_CBOR = [ "a401030339010020590100d388adb3aa7812402281c57ce870821b17558f0a24" \
     "7a771834892d85399ecd4f830dd35f65e7afe5030d9ee10f4873567039976486202cce8a" \
     "c499114194d32fe615026e7eeee5b2ff564041d68b9b33c35a2ac17210c69c9e85fa742" \
     "49b06e4ffa6b38ff5ef54e1860aa59a6fb043e2b65ecf0ce8d0ff90d25683ca2da01661" \
     "8308f3fa7f74efc178ec46e0224f10cf0eed7d46cc6167210f088cc6b77fc08a7fcd145" \
     "36aa9c726519806a96ea00517ce1ed1336ae6962338a6c4cc4754d953ebbffb5d6b1bc7" \
     "6368b552b628adb788b0bc9f895dff6b1c74d79ce210b5941995beb1f498a1e9123666b" \
-    "dc92bc6b0f2a04fdb40cf1d253ba1582673ec2931132143010001"].pack("H*")
+    "dc92bc6b0f2a04fdb40cf1d253ba1582673ec2931132143010001" ].pack("H*")
 
   setup do
     @ec2_parameters = {
@@ -254,5 +254,4 @@ class ActionPack::WebAuthn::CoseKeyTest < ActiveSupport::TestCase
 
     assert_match(/at least 2048 bits/i, error.message)
   end
-
 end
