@@ -36,6 +36,8 @@
 # [+parameters+]
 #   The full COSE key parameters map, including curve and coordinate data.
 class ActionPack::WebAuthn::CoseKey
+  MINIMUM_RSA_KEY_BITS = 2048
+
   # COSE key labels
   KEY_TYPE_LABEL = 1
   ALGORITHM_LABEL = 3
@@ -113,6 +115,7 @@ class ActionPack::WebAuthn::CoseKey
 
       x = parameters[EC2_X_LABEL]
       y = parameters[EC2_Y_LABEL]
+      raise ActionPack::WebAuthn::InvalidKeyError, "Missing EC2 key coordinates" if x.nil? || y.nil?
 
       # Uncompressed point format: 0x04 || x || y
       public_key_bytes = [ UNCOMPRESSED_POINT_MARKER, *x.bytes, *y.bytes ].pack("C*")
@@ -126,6 +129,8 @@ class ActionPack::WebAuthn::CoseKey
       ])
 
       OpenSSL::PKey::EC.new(asn1.to_der)
+    rescue OpenSSL::PKey::PKeyError => error
+      raise ActionPack::WebAuthn::InvalidKeyError, "Invalid EC2 key: #{error.message}"
     end
 
     def build_okp_eddsa_key
@@ -133,6 +138,7 @@ class ActionPack::WebAuthn::CoseKey
       raise ActionPack::WebAuthn::UnsupportedKeyTypeError, "Unsupported OKP curve: #{curve}" unless curve == ED25519
 
       x = parameters[OKP_X_LABEL]
+      raise ActionPack::WebAuthn::InvalidKeyError, "Missing OKP key coordinate" if x.nil?
 
       asn1 = OpenSSL::ASN1::Sequence([
         OpenSSL::ASN1::Sequence([
@@ -142,11 +148,18 @@ class ActionPack::WebAuthn::CoseKey
       ])
 
       OpenSSL::PKey.read(asn1.to_der)
+    rescue OpenSSL::PKey::PKeyError => error
+      raise ActionPack::WebAuthn::InvalidKeyError, "Invalid OKP key: #{error.message}"
     end
 
     def build_rsa_rs256_key
-      n = OpenSSL::BN.new(parameters[RSA_N_LABEL], 2)
-      e = OpenSSL::BN.new(parameters[RSA_E_LABEL], 2)
+      n_bytes = parameters[RSA_N_LABEL]
+      e_bytes = parameters[RSA_E_LABEL]
+      raise ActionPack::WebAuthn::InvalidKeyError, "Missing RSA key parameters" if n_bytes.nil? || e_bytes.nil?
+      raise ActionPack::WebAuthn::InvalidKeyError, "RSA key must be at least #{MINIMUM_RSA_KEY_BITS} bits" if n_bytes.bytesize * 8 < MINIMUM_RSA_KEY_BITS
+
+      n = OpenSSL::BN.new(n_bytes, 2)
+      e = OpenSSL::BN.new(e_bytes, 2)
 
       asn1 = OpenSSL::ASN1::Sequence([
         OpenSSL::ASN1::Sequence([
@@ -162,5 +175,7 @@ class ActionPack::WebAuthn::CoseKey
       ])
 
       OpenSSL::PKey::RSA.new(asn1.to_der)
+    rescue OpenSSL::PKey::PKeyError => error
+      raise ActionPack::WebAuthn::InvalidKeyError, "Invalid RSA key: #{error.message}"
     end
 end

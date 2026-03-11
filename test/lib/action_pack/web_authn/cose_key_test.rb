@@ -160,6 +160,67 @@ class ActionPack::WebAuthn::CoseKeyTest < ActiveSupport::TestCase
     assert_match(/curve/, error.message.downcase)
   end
 
+  test "raises error for EC2 key with missing coordinates" do
+    parameters = @ec2_parameters.except(-3) # missing y coordinate
+    key = ActionPack::WebAuthn::CoseKey.new(
+      key_type: 2,
+      algorithm: -7,
+      parameters: parameters
+    )
+
+    error = assert_raises(ActionPack::WebAuthn::InvalidKeyError) do
+      key.to_openssl_key
+    end
+
+    assert_match(/missing ec2 key coordinates/i, error.message)
+  end
+
+  test "raises error for OKP key with missing coordinate" do
+    parameters = @okp_parameters.except(-2) # missing x coordinate
+    key = ActionPack::WebAuthn::CoseKey.new(
+      key_type: 1,
+      algorithm: -8,
+      parameters: parameters
+    )
+
+    error = assert_raises(ActionPack::WebAuthn::InvalidKeyError) do
+      key.to_openssl_key
+    end
+
+    assert_match(/missing okp key coordinate/i, error.message)
+  end
+
+  test "raises error for RSA key with missing parameters" do
+    parameters = @rsa_parameters.except(-1) # missing n
+    key = ActionPack::WebAuthn::CoseKey.new(
+      key_type: 3,
+      algorithm: -257,
+      parameters: parameters
+    )
+
+    error = assert_raises(ActionPack::WebAuthn::InvalidKeyError) do
+      key.to_openssl_key
+    end
+
+    assert_match(/missing rsa key parameters/i, error.message)
+  end
+
+  test "raises error for RSA key smaller than 2048 bits" do
+    small_n = "\x01" + ("\x00" * 127) # 1024-bit modulus
+    parameters = @rsa_parameters.merge(-1 => small_n)
+    key = ActionPack::WebAuthn::CoseKey.new(
+      key_type: 3,
+      algorithm: -257,
+      parameters: parameters
+    )
+
+    error = assert_raises(ActionPack::WebAuthn::InvalidKeyError) do
+      key.to_openssl_key
+    end
+
+    assert_match(/at least 2048 bits/i, error.message)
+  end
+
   private
     def encode_cbor(hash)
       # CBOR map encoding
