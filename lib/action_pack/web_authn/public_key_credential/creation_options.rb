@@ -79,7 +79,7 @@ class ActionPack::WebAuthn::PublicKeyCredential::CreationOptions < ActionPack::W
     @id = id
     @name = name
     @display_name = display_name
-    @resident_key = resident_key
+    @resident_key = validate_resident_key(resident_key)
     @exclude_credentials = exclude_credentials
     @attestation = validate_attestation(attestation)
   end
@@ -119,7 +119,16 @@ class ActionPack::WebAuthn::PublicKeyCredential::CreationOptions < ActionPack::W
   end
 
   private
+    RESIDENT_KEY_OPTIONS = %i[ preferred required discouraged ].freeze
     ATTESTATION_PREFERENCES = %i[ none indirect direct enterprise ].freeze
+
+    def validate_resident_key(value)
+      if RESIDENT_KEY_OPTIONS.include?(value)
+        value
+      else
+        raise ArgumentError, "Invalid resident key option: #{value.inspect}. Must be one of: #{RESIDENT_KEY_OPTIONS.map(&:inspect).join(", ")}"
+      end
+    end
 
     def validate_attestation(value)
       if ATTESTATION_PREFERENCES.include?(value)
