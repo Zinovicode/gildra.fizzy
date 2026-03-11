@@ -54,7 +54,7 @@ class ActionPack::WebAuthn::Authenticator::Response
   def validate!
     super
   rescue ActiveModel::ValidationError
-    raise ActionPack::WebAuthn::InvalidAuthenticationResponseError, errors.full_messages.join(", ")
+    raise ActionPack::WebAuthn::InvalidResponseError, errors.full_messages.join(", ")
   end
 
   def relying_party
@@ -64,7 +64,7 @@ class ActionPack::WebAuthn::Authenticator::Response
   def client_data
     @client_data ||= JSON.parse(client_data_json)
   rescue JSON::ParserError
-    raise ActionPack::WebAuthn::InvalidAuthenticationResponseError, "Client data is not valid JSON"
+    raise ActionPack::WebAuthn::InvalidResponseError, "Client data is not valid JSON"
   end
 
   def authenticator_data

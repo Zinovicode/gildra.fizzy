@@ -37,7 +37,7 @@ class ActionPack::Passkey < ApplicationRecord
     credential.authenticate(passkey, challenge: challenge)
     update!(sign_count: credential.sign_count, backed_up: credential.backed_up)
     self
-  rescue ActionPack::WebAuthn::InvalidAuthenticationResponseError
+  rescue ActionPack::WebAuthn::InvalidResponseError
     nil
   end
 

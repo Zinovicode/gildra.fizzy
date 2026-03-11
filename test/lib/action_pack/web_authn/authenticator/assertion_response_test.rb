@@ -58,7 +58,7 @@ class ActionPack::WebAuthn::Authenticator::AssertionResponseTest < ActiveSupport
       origin: @origin
     )
 
-    error = assert_raises(ActionPack::WebAuthn::InvalidAuthenticationResponseError) do
+    error = assert_raises(ActionPack::WebAuthn::InvalidResponseError) do
       response.validate!
     end
 
@@ -75,7 +75,7 @@ class ActionPack::WebAuthn::Authenticator::AssertionResponseTest < ActiveSupport
       origin: @origin
     )
 
-    error = assert_raises(ActionPack::WebAuthn::InvalidAuthenticationResponseError) do
+    error = assert_raises(ActionPack::WebAuthn::InvalidResponseError) do
       response.validate!
     end
 
@@ -85,7 +85,7 @@ class ActionPack::WebAuthn::Authenticator::AssertionResponseTest < ActiveSupport
   test "validate! raises when challenge does not match" do
     @response.challenge = "wrong-challenge"
 
-    error = assert_raises(ActionPack::WebAuthn::InvalidAuthenticationResponseError) do
+    error = assert_raises(ActionPack::WebAuthn::InvalidResponseError) do
       @response.validate!
     end
 
@@ -95,7 +95,7 @@ class ActionPack::WebAuthn::Authenticator::AssertionResponseTest < ActiveSupport
   test "validate! raises when origin does not match" do
     @response.origin = "https://evil.com"
 
-    error = assert_raises(ActionPack::WebAuthn::InvalidAuthenticationResponseError) do
+    error = assert_raises(ActionPack::WebAuthn::InvalidResponseError) do
       @response.validate!
     end
 
@@ -148,7 +148,7 @@ class ActionPack::WebAuthn::Authenticator::AssertionResponseTest < ActiveSupport
       user_verification: :required
     )
 
-    error = assert_raises(ActionPack::WebAuthn::InvalidAuthenticationResponseError) do
+    error = assert_raises(ActionPack::WebAuthn::InvalidResponseError) do
       response.validate!
     end
 

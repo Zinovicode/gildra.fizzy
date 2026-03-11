@@ -103,7 +103,7 @@ class ActionPack::WebAuthn::Authenticator::DataTest < ActiveSupport::TestCase
     flags = 0x41
     bytes = build_authenticator_data(flags: flags, include_credential: false)
 
-    assert_raises(ActionPack::WebAuthn::InvalidAuthenticationResponseError) do
+    assert_raises(ActionPack::WebAuthn::InvalidResponseError) do
       ActionPack::WebAuthn::Authenticator::Data.decode(bytes)
     end
   end
@@ -117,7 +117,7 @@ class ActionPack::WebAuthn::Authenticator::DataTest < ActiveSupport::TestCase
     bytes.concat([ 0 ].pack("N").bytes)
     bytes.concat(@aaguid.bytes)
 
-    assert_raises(ActionPack::WebAuthn::InvalidAuthenticationResponseError) do
+    assert_raises(ActionPack::WebAuthn::InvalidResponseError) do
       ActionPack::WebAuthn::Authenticator::Data.decode(bytes.pack("C*"))
     end
   end
@@ -131,7 +131,7 @@ class ActionPack::WebAuthn::Authenticator::DataTest < ActiveSupport::TestCase
     bytes.concat(@aaguid.bytes)
     bytes.concat([ 9999 ].pack("n").bytes) # credential ID length far exceeding remaining data
 
-    assert_raises(ActionPack::WebAuthn::InvalidAuthenticationResponseError) do
+    assert_raises(ActionPack::WebAuthn::InvalidResponseError) do
       ActionPack::WebAuthn::Authenticator::Data.decode(bytes.pack("C*"))
     end
   end

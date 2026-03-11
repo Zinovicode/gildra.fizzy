@@ -1,5 +1,5 @@
 module ActionPack::WebAuthn
-  class InvalidAuthenticationResponseError < StandardError; end
+  class InvalidResponseError < StandardError; end
   class InvalidCborError < StandardError; end
   class InvalidKeyError < StandardError; end
   class UnsupportedKeyTypeError < StandardError; end

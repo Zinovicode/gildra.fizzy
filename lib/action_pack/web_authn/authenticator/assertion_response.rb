@@ -44,7 +44,7 @@ class ActionPack::WebAuthn::Authenticator::AssertionResponse < ActionPack::WebAu
     @signature = Base64.urlsafe_decode64(@signature) unless @signature.encoding == Encoding::BINARY
     @authenticator_data = ActionPack::WebAuthn::Authenticator::Data.wrap(authenticator_data)
   rescue ArgumentError
-    raise ActionPack::WebAuthn::InvalidAuthenticationResponseError, "Invalid base64 encoding in signature"
+    raise ActionPack::WebAuthn::InvalidResponseError, "Invalid base64 encoding in signature"
   end
 
   private

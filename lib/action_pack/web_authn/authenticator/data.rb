@@ -68,7 +68,7 @@ class ActionPack::WebAuthn::Authenticator::Data
         decode(data)
       end
     rescue ArgumentError
-      raise ActionPack::WebAuthn::InvalidAuthenticationResponseError, "Invalid base64 encoding in authenticator data"
+      raise ActionPack::WebAuthn::InvalidResponseError, "Invalid base64 encoding in authenticator data"
     end
 
     def decode(bytes)
@@ -76,7 +76,7 @@ class ActionPack::WebAuthn::Authenticator::Data
 
       minimum_length = RELYING_PARTY_ID_HASH_LENGTH + FLAGS_LENGTH + SIGN_COUNT_LENGTH
       if bytes.length < minimum_length
-        raise ActionPack::WebAuthn::InvalidAuthenticationResponseError, "Authenticator data is too short"
+        raise ActionPack::WebAuthn::InvalidResponseError, "Authenticator data is too short"
       end
 
       position = 0
@@ -96,7 +96,7 @@ class ActionPack::WebAuthn::Authenticator::Data
 
       if flags & ATTESTED_CREDENTIAL_DATA_FLAG != 0
         if bytes.length < position + AAGUID_LENGTH + CREDENTIAL_ID_LENGTH_BYTES
-          raise ActionPack::WebAuthn::InvalidAuthenticationResponseError, "Authenticator data is too short for attested credential data"
+          raise ActionPack::WebAuthn::InvalidResponseError, "Authenticator data is too short for attested credential data"
         end
 
         aaguid_bytes = bytes[position, AAGUID_LENGTH].pack("C*")
@@ -107,7 +107,7 @@ class ActionPack::WebAuthn::Authenticator::Data
         position += CREDENTIAL_ID_LENGTH_BYTES
 
         if bytes.length < position + credential_id_length + 1
-          raise ActionPack::WebAuthn::InvalidAuthenticationResponseError, "Authenticator data is too short for credential ID and public key"
+          raise ActionPack::WebAuthn::InvalidResponseError, "Authenticator data is too short for credential ID and public key"
         end
 
         credential_id = Base64.urlsafe_encode64(bytes[position, credential_id_length].pack("C*"), padding: false)

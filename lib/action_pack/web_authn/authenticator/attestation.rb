@@ -48,7 +48,7 @@ class ActionPack::WebAuthn::Authenticator::Attestation
       decode(data)
     end
   rescue ArgumentError
-    raise ActionPack::WebAuthn::InvalidAuthenticationResponseError, "Invalid base64 encoding in attestation object"
+    raise ActionPack::WebAuthn::InvalidResponseError, "Invalid base64 encoding in attestation object"
   end
 
   def self.decode(bytes)
