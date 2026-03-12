@@ -10,11 +10,12 @@ class ActionPack::Passkey::ChallengesControllerTest < ActionDispatch::Integratio
     end
   end
 
-  test "stores challenge in session" do
+  test "stores challenge in cookie" do
     untenanted do
       post passkey_challenge_url
 
-      assert_equal response.parsed_body["challenge"], session[:webauthn_challenge]
+      jar = ActionDispatch::Cookies::CookieJar.build(request, cookies.to_hash)
+      assert_equal response.parsed_body["challenge"], jar.encrypted[:webauthn_challenge]
     end
   end
 
