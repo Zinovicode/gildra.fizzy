@@ -165,6 +165,10 @@ class ActionPack::WebAuthn::CborDecoderTest < ActiveSupport::TestCase
     assert_equal [], decode("9fff")
   end
 
+  test "decodes empty indefinite length map" do
+    assert_equal({}, decode("bfff"))
+  end
+
   test "decodes indefinite length map" do
     assert_equal({ "a" => 1, "b" => 2 }, decode("bf616101616202ff"))
   end
