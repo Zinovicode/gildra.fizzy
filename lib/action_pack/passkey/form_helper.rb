@@ -35,8 +35,8 @@ module ActionPack::Passkey::FormHelper
   # - +param+: the form parameter namespace (default: +:passkey+)
   # - +form+: additional HTML attributes for the +<form>+ tag
   # - All other options are passed to the +<button>+ tag
-  def create_passkey_button(label = nil, url, param: :passkey, form: {}, **options, &block)
-    button_content = block ? capture(&block) : label
+  def create_passkey_button(name = nil, url = nil, param: :passkey, form: {}, **options, &block)
+    url, name = name, block ? capture(&block) : nil if block_given?
     form_options = form.reverse_merge(method: :post, action: url, class: "button_to")
 
     tag.form(**form_options) do
@@ -45,7 +45,7 @@ module ActionPack::Passkey::FormHelper
         hidden_field_tag("#{param}[client_data_json]", nil, id: nil, data: { passkey_field: "client_data_json" }),
         hidden_field_tag("#{param}[attestation_object]", nil, id: nil, data: { passkey_field: "attestation_object" }),
         hidden_field_tag("#{param}[transports][]", nil, id: nil, data: { passkey_field: "transports" }),
-        tag.button(button_content, type: :button, data: { passkey: "create" }, **options)
+        tag.button(name, type: :button, data: { passkey: "create" }, **options)
       ])
     end
   end
@@ -60,8 +60,8 @@ module ActionPack::Passkey::FormHelper
   # - +mediation+: WebAuthn mediation hint (e.g. +"conditional"+ for autofill-assisted sign in)
   # - +form+: additional HTML attributes for the +<form>+ tag
   # - All other options are passed to the +<button>+ tag
-  def sign_in_with_passkey_button(label = nil, url, param: :passkey, mediation: nil, form: {}, **options, &block)
-    button_content = block ? capture(&block) : label
+  def sign_in_with_passkey_button(name = nil, url = nil, param: :passkey, mediation: nil, form: {}, **options, &block)
+    url, name = name, block ? capture(&block) : nil if block_given?
     form_data = {}
     form_data[:passkey_mediation] = mediation if mediation
     form_options = form.reverse_merge(method: :post, action: url, class: "button_to", data: form_data)
@@ -73,7 +73,7 @@ module ActionPack::Passkey::FormHelper
         hidden_field_tag("#{param}[client_data_json]", nil, id: nil, data: { passkey_field: "client_data_json" }),
         hidden_field_tag("#{param}[authenticator_data]", nil, id: nil, data: { passkey_field: "authenticator_data" }),
         hidden_field_tag("#{param}[signature]", nil, id: nil, data: { passkey_field: "signature" }),
-        tag.button(button_content, type: :button, data: { passkey: "sign_in" }, **options)
+        tag.button(name, type: :button, data: { passkey: "sign_in" }, **options)
       ])
     end
   end

@@ -115,9 +115,7 @@ module ActionPack::Passkey::Holder
 
     private
       def extract_options_for(klass, options)
-        keys = klass.instance_method(:initialize).parameters.filter_map do |type, name|
-          name if type == :key || type == :keyreq
-        end
+        keys = klass.attribute_names.map(&:to_sym)
 
         extracted = options.slice(*keys)
         options.except!(*keys)

@@ -24,11 +24,10 @@
 #   The relying party (your application) configuration. Defaults to
 #   +ActionPack::WebAuthn.relying_party+.
 class ActionPack::WebAuthn::PublicKeyCredential::RequestOptions < ActionPack::WebAuthn::PublicKeyCredential::Options
-  attr_accessor :credentials
+  attribute :credentials, default: -> { [] }
 
   def initialize(attributes = {})
     super
-    @credentials ||= []
     validate!
   end
 

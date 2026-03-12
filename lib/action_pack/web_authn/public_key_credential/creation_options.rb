@@ -46,7 +46,12 @@ class ActionPack::WebAuthn::PublicKeyCredential::CreationOptions < ActionPack::W
   RESIDENT_KEY_OPTIONS = %i[ preferred required discouraged ].freeze
   ATTESTATION_PREFERENCES = %i[ none indirect direct enterprise ].freeze
 
-  attr_accessor :id, :name, :display_name, :resident_key, :exclude_credentials, :attestation
+  attribute :id
+  attribute :name
+  attribute :display_name
+  attribute :resident_key, default: :preferred
+  attribute :exclude_credentials, default: -> { [] }
+  attribute :attestation, default: :none
 
   validates :id, :name, :display_name, presence: true
   validates :resident_key, inclusion: { in: RESIDENT_KEY_OPTIONS }
@@ -54,9 +59,8 @@ class ActionPack::WebAuthn::PublicKeyCredential::CreationOptions < ActionPack::W
 
   def initialize(attributes = {})
     super
-    @resident_key = (@resident_key || :preferred).to_sym
-    @exclude_credentials ||= []
-    @attestation = (@attestation || :none).to_sym
+    self.resident_key = resident_key.to_sym
+    self.attestation = attestation.to_sym
     validate!
   end
 
