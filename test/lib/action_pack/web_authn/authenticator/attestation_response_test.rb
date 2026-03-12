@@ -1,8 +1,6 @@
 require "test_helper"
 
 class ActionPack::WebAuthn::Authenticator::AttestationResponseTest < ActiveSupport::TestCase
-  # All CBOR data generated with Python cbor2 v5.8.0
-  #
   # Auth data in all objects contains:
   #   rp_id_hash: SHA-256("example.com") (32 bytes)
   #   sign_count: 0

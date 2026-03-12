@@ -1,8 +1,6 @@
 require "test_helper"
 
 class ActionPack::WebAuthn::CoseKeyTest < ActiveSupport::TestCase
-  # All CBOR data generated with Python cbor2 v5.8.0
-
   # EC2/ES256 P-256 public key (32-byte x and y coordinates)
   EC2_X = [ "2ba472104c686f39d4b623cc9324953e7053b47cae818e8cf774203a4f51af71" ].pack("H*")
   EC2_Y = [ "69cb8ac519bdd929e2bdbe79e9f9b8d14c2d89a7cbd324647a1ccd68b8de3ca0" ].pack("H*")

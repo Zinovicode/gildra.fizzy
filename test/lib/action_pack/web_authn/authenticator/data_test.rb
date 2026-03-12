@@ -1,8 +1,6 @@
 require "test_helper"
 
 class ActionPack::WebAuthn::Authenticator::DataTest < ActiveSupport::TestCase
-  # All test data generated with Python cbor2 v5.8.0
-  #
   # Common values:
   #   rp_id_hash: SHA-256("example.com") (32 bytes)
   #   sign_count: 42
