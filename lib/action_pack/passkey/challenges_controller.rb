@@ -22,12 +22,16 @@ class ActionPack::Passkey::ChallengesController < ActionController::Base
   # Generates a fresh challenge, stores it in an encrypted cookie, and returns
   # it as JSON. The cookie is consumed on the next passkey form submission.
   def create
-    challenge = ActionPack::WebAuthn::PublicKeyCredential::Options.new(
-      challenge_expiration: Rails.configuration.action_pack.web_authn.request_challenge_expiration
-    ).challenge
+    challenge = create_passkey_challenge
 
     cookies.encrypted[COOKIE_NAME] = { value: challenge, httponly: true, same_site: :strict, secure: !request.local? && request.ssl? }
-
     render json: { challenge: challenge }
   end
+
+  private
+    def create_passkey_challenge
+      ActionPack::WebAuthn::PublicKeyCredential::Options.new(
+        challenge_expiration: Rails.configuration.action_pack.web_authn.request_challenge_expiration
+      ).challenge
+    end
 end
