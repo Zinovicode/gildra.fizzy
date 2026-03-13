@@ -15,7 +15,7 @@ class ActionPack::Passkey::ChallengesControllerTest < ActionDispatch::Integratio
       post passkey_challenge_url
 
       jar = ActionDispatch::Cookies::CookieJar.build(request, cookies.to_hash)
-      assert_equal response.parsed_body["challenge"], jar.encrypted[:webauthn_challenge]
+      assert_equal response.parsed_body["challenge"], jar.encrypted[ActionPack::Passkey::ChallengesController::COOKIE_NAME]
     end
   end
 
