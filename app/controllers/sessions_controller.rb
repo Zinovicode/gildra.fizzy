@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
   layout "public"
 
   def new
-    @request_options = ActionPack::Passkey.request_options
+    @request_options = passkey_request_options
   end
 
   def create

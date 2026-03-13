@@ -5,11 +5,11 @@ class My::PasskeysController < ApplicationController
 
   def index
     @passkeys = Current.identity.passkeys.order(name: :asc, created_at: :desc)
-    @creation_options = ActionPack::Passkey.creation_options(holder: Current.identity)
+    @creation_options = passkey_creation_options(holder: Current.identity)
   end
 
   def create
-    passkey = Current.identity.passkeys.register(passkey_registration_params)
+    passkey = Current.identity.passkeys.register(passkey_creation_params)
 
     redirect_to edit_my_passkey_path(passkey, created: true)
   end
