@@ -20,6 +20,14 @@
 # fields. Values can be symbols (sent to the record), procs (evaluated in the record's context),
 # or plain values:
 #
+# [+name+]
+#   A human-readable account identifier (typically an email or username) shown by the
+#   authenticator when the user selects a passkey. Maps to the WebAuthn +user.name+ field.
+#
+# [+display_name+]
+#   A friendly label for the user (typically their full name) shown by the authenticator
+#   during passkey registration. Maps to the WebAuthn +user.displayName+ field.
+#
 #   has_passkeys name: :email, display_name: :name
 #
 # For more complex configuration, pass a block that receives a ActionPack::Passkey::Holder::Config:
