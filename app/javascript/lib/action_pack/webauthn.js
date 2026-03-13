@@ -1,3 +1,11 @@
+// Thin wrapper around the browser WebAuthn API (navigator.credentials).
+//
+// Handles the base64url ↔ ArrayBuffer conversions required by the spec so
+// callers can work with plain JSON objects from the server-rendered meta tags.
+
+// Call navigator.credentials.create() with the given creation options.
+// Returns { client_data_json, attestation_object, transports } with all
+// binary fields encoded as base64url strings ready for form submission.
 export async function register(options) {
   const publicKey = prepareCreationOptions(options)
   const credential = await navigator.credentials.create({ publicKey })
@@ -9,6 +17,10 @@ export async function register(options) {
   }
 }
 
+// Call navigator.credentials.get() with the given request options.
+// Accepts an optional signal (AbortSignal) and mediation hint ("conditional"
+// for autofill UI). Returns { id, client_data_json, authenticator_data, signature }
+// with binary fields encoded as base64url strings.
 export async function authenticate(options, { signal, mediation } = {}) {
   const publicKey = prepareRequestOptions(options)
   const credential = await navigator.credentials.get({ publicKey, signal, mediation })
@@ -21,6 +33,8 @@ export async function authenticate(options, { signal, mediation } = {}) {
   }
 }
 
+// Convert JSON creation options into the format expected by the browser:
+// decode base64url challenge, user.id, and excludeCredentials[].id into ArrayBuffers.
 function prepareCreationOptions(options) {
   return {
     ...options,
@@ -33,6 +47,10 @@ function prepareCreationOptions(options) {
   }
 }
 
+// Convert JSON request options into the format expected by the browser:
+// decode base64url challenge and allowCredentials[].id into ArrayBuffers.
+// Strips allowCredentials entirely when empty so the browser prompts for
+// any available credential (required for conditional mediation).
 function prepareRequestOptions(options) {
   const prepared = {
     ...options,
