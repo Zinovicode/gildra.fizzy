@@ -27,6 +27,7 @@ class ActionPack::Railtie < Rails::Railtie
   config.action_pack.web_authn.request_challenge_expiration = 5.minutes
 
   config.action_pack.passkey = ActiveSupport::OrderedOptions.new
+  config.action_pack.passkey.parent_class_name = "ApplicationRecord"
   config.action_pack.passkey.routes_prefix = "/rails/action_pack/passkey"
   config.action_pack.passkey.draw_routes = true
   config.action_pack.passkey.challenge_url = nil

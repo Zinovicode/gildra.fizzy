@@ -27,7 +27,7 @@
 #
 # Call +has_passkeys+ in your model to set up the association and configure ceremony options
 # per-holder. See ActionPack::Passkey::Holder for details.
-class ActionPack::Passkey < ApplicationRecord
+class ActionPack::Passkey < Rails.configuration.action_pack.passkey.parent_class_name.constantize
   self.table_name = "action_pack_passkeys"
   belongs_to :holder, polymorphic: true
   serialize :transports, coder: JSON, type: Array, default: []
