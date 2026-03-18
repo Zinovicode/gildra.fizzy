@@ -1,6 +1,6 @@
 class InitialSchema < ActiveRecord::Migration[8.2]
   def change
-    create_table "accesses", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "accesses", id: :uuid do |t|
       t.datetime "accessed_at"
       t.uuid "board_id", null: false
       t.datetime "created_at", null: false
@@ -13,7 +13,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["user_id"], name: "index_accesses_on_user_id"
     end
 
-    create_table "account_join_codes", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "account_join_codes", id: :uuid do |t|
       t.uuid "account_id"
       t.string "code", limit: 255, null: false
       t.datetime "created_at", null: false
@@ -23,7 +23,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["code"], name: "index_account_join_codes_on_code", unique: true
     end
 
-    create_table "accounts", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "accounts", id: :uuid do |t|
       t.datetime "created_at", null: false
       t.integer "external_account_id"
       t.string "name", limit: 255, null: false
@@ -31,8 +31,8 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["external_account_id"], name: "index_accounts_on_external_account_id", unique: true
     end
 
-    create_table "action_text_rich_texts", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
-      t.text "body", size: :long
+    create_table "action_text_rich_texts", id: :uuid do |t|
+      t.text "body"
       t.datetime "created_at", null: false
       t.string "name", limit: 255, null: false
       t.uuid "record_id", null: false
@@ -41,7 +41,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
     end
 
-    create_table "active_storage_attachments", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "active_storage_attachments", id: :uuid do |t|
       t.uuid "blob_id", null: false
       t.datetime "created_at", null: false
       t.string "name", limit: 255, null: false
@@ -51,7 +51,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
     end
 
-    create_table "active_storage_blobs", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "active_storage_blobs", id: :uuid do |t|
       t.bigint "byte_size", null: false
       t.string "checksum", limit: 255
       t.string "content_type", limit: 255
@@ -63,27 +63,27 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
     end
 
-    create_table "active_storage_variant_records", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "active_storage_variant_records", id: :uuid do |t|
       t.uuid "blob_id", null: false
       t.string "variation_digest", limit: 255, null: false
       t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
     end
 
-    create_table "assignees_filters", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "assignees_filters", id: false do |t|
       t.uuid "assignee_id", null: false
       t.uuid "filter_id", null: false
       t.index ["assignee_id"], name: "index_assignees_filters_on_assignee_id"
       t.index ["filter_id"], name: "index_assignees_filters_on_filter_id"
     end
 
-    create_table "assigners_filters", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "assigners_filters", id: false do |t|
       t.uuid "assigner_id", null: false
       t.uuid "filter_id", null: false
       t.index ["assigner_id"], name: "index_assigners_filters_on_assigner_id"
       t.index ["filter_id"], name: "index_assigners_filters_on_filter_id"
     end
 
-    create_table "assignments", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "assignments", id: :uuid do |t|
       t.uuid "assignee_id", null: false
       t.uuid "assigner_id", null: false
       t.uuid "card_id", null: false
@@ -93,7 +93,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["card_id"], name: "index_assignments_on_card_id"
     end
 
-    create_table "board_publications", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "board_publications", id: :uuid do |t|
       t.uuid "board_id", null: false
       t.datetime "created_at", null: false
       t.string "key", limit: 255
@@ -102,7 +102,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["key"], name: "index_board_publications_on_key", unique: true
     end
 
-    create_table "boards", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "boards", id: :uuid do |t|
       t.uuid "account_id"
       t.boolean "all_access", default: false, null: false
       t.datetime "created_at", null: false
@@ -112,21 +112,21 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["creator_id"], name: "index_boards_on_creator_id"
     end
 
-    create_table "boards_filters", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "boards_filters", id: false do |t|
       t.uuid "board_id", null: false
       t.uuid "filter_id", null: false
       t.index ["board_id"], name: "index_boards_filters_on_board_id"
       t.index ["filter_id"], name: "index_boards_filters_on_filter_id"
     end
 
-    create_table "card_activity_spikes", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "card_activity_spikes", id: :uuid do |t|
       t.uuid "card_id", null: false
       t.datetime "created_at", null: false
       t.datetime "updated_at", null: false
       t.index ["card_id"], name: "index_card_activity_spikes_on_card_id"
     end
 
-    create_table "card_engagements", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "card_engagements", id: :uuid do |t|
       t.uuid "card_id"
       t.datetime "created_at", null: false
       t.string "status", limit: 255, default: "doing", null: false
@@ -135,14 +135,14 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["status"], name: "index_card_engagements_on_status"
     end
 
-    create_table "card_goldnesses", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "card_goldnesses", id: :uuid do |t|
       t.uuid "card_id", null: false
       t.datetime "created_at", null: false
       t.datetime "updated_at", null: false
       t.index ["card_id"], name: "index_card_goldnesses_on_card_id", unique: true
     end
 
-    create_table "card_not_nows", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "card_not_nows", id: :uuid do |t|
       t.uuid "card_id", null: false
       t.datetime "created_at", null: false
       t.datetime "updated_at", null: false
@@ -151,7 +151,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["user_id"], name: "index_card_not_nows_on_user_id"
     end
 
-    create_table "cards", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "cards", id: :uuid do |t|
       t.uuid "account_id"
       t.uuid "board_id", null: false
       t.uuid "column_id"
@@ -167,14 +167,14 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["last_active_at", "status"], name: "index_cards_on_last_active_at_and_status"
     end
 
-    create_table "closers_filters", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "closers_filters", id: false do |t|
       t.uuid "closer_id", null: false
       t.uuid "filter_id", null: false
       t.index ["closer_id"], name: "index_closers_filters_on_closer_id"
       t.index ["filter_id"], name: "index_closers_filters_on_filter_id"
     end
 
-    create_table "closures", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "closures", id: :uuid do |t|
       t.uuid "card_id", null: false
       t.datetime "created_at", null: false
       t.datetime "updated_at", null: false
@@ -184,7 +184,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["user_id"], name: "index_closures_on_user_id"
     end
 
-    create_table "columns", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "columns", id: :uuid do |t|
       t.uuid "account_id"
       t.uuid "board_id", null: false
       t.string "color", limit: 255, null: false
@@ -196,7 +196,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["board_id"], name: "index_columns_on_board_id"
     end
 
-    create_table "comments", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "comments", id: :uuid do |t|
       t.uuid "account_id"
       t.uuid "card_id", null: false
       t.datetime "created_at", null: false
@@ -205,14 +205,14 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["card_id"], name: "index_comments_on_card_id"
     end
 
-    create_table "creators_filters", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "creators_filters", id: false do |t|
       t.uuid "creator_id", null: false
       t.uuid "filter_id", null: false
       t.index ["creator_id"], name: "index_creators_filters_on_creator_id"
       t.index ["filter_id"], name: "index_creators_filters_on_filter_id"
     end
 
-    create_table "entropies", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "entropies", id: :uuid do |t|
       t.bigint "auto_postpone_period", default: 2592000, null: false
       t.uuid "container_id", null: false
       t.string "container_type", limit: 255, null: false
@@ -222,7 +222,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["container_type", "container_id"], name: "index_entropy_configurations_on_container", unique: true
     end
 
-    create_table "events", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "events", id: :uuid do |t|
       t.uuid "account_id"
       t.string "action", limit: 255, null: false
       t.uuid "board_id", null: false
@@ -239,7 +239,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["eventable_type", "eventable_id"], name: "index_events_on_eventable"
     end
 
-    create_table "filters", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "filters", id: :uuid do |t|
       t.uuid "account_id"
       t.datetime "created_at", null: false
       t.uuid "creator_id", null: false
@@ -249,21 +249,21 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["creator_id", "params_digest"], name: "index_filters_on_creator_id_and_params_digest", unique: true
     end
 
-    create_table "filters_tags", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "filters_tags", id: false do |t|
       t.uuid "filter_id", null: false
       t.uuid "tag_id", null: false
       t.index ["filter_id"], name: "index_filters_tags_on_filter_id"
       t.index ["tag_id"], name: "index_filters_tags_on_tag_id"
     end
 
-    create_table "identities", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "identities", id: :uuid do |t|
       t.datetime "created_at", null: false
       t.string "email_address", limit: 255, null: false
       t.datetime "updated_at", null: false
       t.index ["email_address"], name: "index_identities_on_email_address", unique: true
     end
 
-    create_table "magic_links", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "magic_links", id: :uuid do |t|
       t.string "code", limit: 255, null: false
       t.datetime "created_at", null: false
       t.datetime "expires_at", null: false
@@ -274,7 +274,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["identity_id"], name: "index_magic_links_on_identity_id"
     end
 
-    create_table "memberships", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "memberships", id: :uuid do |t|
       t.datetime "created_at", null: false
       t.uuid "identity_id", null: false
       t.string "join_code", limit: 255
@@ -285,7 +285,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["tenant"], name: "index_memberships_on_user_tenant_and_user_id"
     end
 
-    create_table "mentions", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "mentions", id: :uuid do |t|
       t.datetime "created_at", null: false
       t.uuid "mentionee_id", null: false
       t.uuid "mentioner_id", null: false
@@ -297,7 +297,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["source_type", "source_id"], name: "index_mentions_on_source"
     end
 
-    create_table "notification_bundles", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "notification_bundles", id: :uuid do |t|
       t.uuid "account_id"
       t.datetime "created_at", null: false
       t.datetime "ends_at", null: false
@@ -310,7 +310,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["user_id", "status"], name: "index_notification_bundles_on_user_id_and_status"
     end
 
-    create_table "notifications", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "notifications", id: :uuid do |t|
       t.uuid "account_id"
       t.datetime "created_at", null: false
       t.uuid "creator_id"
@@ -325,7 +325,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["user_id"], name: "index_notifications_on_user_id"
     end
 
-    create_table "pins", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "pins", id: :uuid do |t|
       t.uuid "card_id", null: false
       t.datetime "created_at", null: false
       t.datetime "updated_at", null: false
@@ -335,7 +335,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["user_id"], name: "index_pins_on_user_id"
     end
 
-    create_table "push_subscriptions", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "push_subscriptions", id: :uuid do |t|
       t.uuid "account_id"
       t.string "auth_key", limit: 255
       t.datetime "created_at", null: false
@@ -351,7 +351,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["user_id"], name: "index_push_subscriptions_on_user_id"
     end
 
-    create_table "reactions", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "reactions", id: :uuid do |t|
       t.uuid "comment_id", null: false
       t.string "content", limit: 16, null: false
       t.datetime "created_at", null: false
@@ -361,7 +361,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["reacter_id"], name: "index_reactions_on_reacter_id"
     end
 
-    create_table "search_queries", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "search_queries", id: :uuid do |t|
       t.datetime "created_at", null: false
       t.string "terms", limit: 2000, null: false
       t.datetime "updated_at", null: false
@@ -371,12 +371,12 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["user_id"], name: "index_search_queries_on_user_id"
     end
 
-    create_table "search_results", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "search_results", id: :uuid do |t|
       t.datetime "created_at", null: false
       t.datetime "updated_at", null: false
     end
 
-    create_table "sessions", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "sessions", id: :uuid do |t|
       t.datetime "created_at", null: false
       t.uuid "identity_id", null: false
       t.string "ip_address", limit: 255
@@ -385,7 +385,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["identity_id"], name: "index_sessions_on_identity_id"
     end
 
-    create_table "steps", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "steps", id: :uuid do |t|
       t.uuid "account_id"
       t.uuid "card_id", null: false
       t.boolean "completed", default: false, null: false
@@ -396,7 +396,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["card_id"], name: "index_steps_on_card_id"
     end
 
-    create_table "taggings", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "taggings", id: :uuid do |t|
       t.uuid "card_id", null: false
       t.datetime "created_at", null: false
       t.uuid "tag_id", null: false
@@ -405,7 +405,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["tag_id"], name: "index_taggings_on_tag_id"
     end
 
-    create_table "tags", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "tags", id: :uuid do |t|
       t.uuid "account_id"
       t.datetime "created_at", null: false
       t.string "title", limit: 255
@@ -413,7 +413,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["title"], name: "index_tags_on_title", unique: true
     end
 
-    create_table "user_settings", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "user_settings", id: :uuid do |t|
       t.integer "bundle_email_frequency", default: 0, null: false
       t.datetime "created_at", null: false
       t.string "timezone_name", limit: 255
@@ -423,7 +423,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["user_id"], name: "index_user_settings_on_user_id"
     end
 
-    create_table "users", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "users", id: :uuid do |t|
       t.uuid "account_id"
       t.boolean "active", default: true, null: false
       t.datetime "created_at", null: false
@@ -435,7 +435,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["role"], name: "index_users_on_role"
     end
 
-    create_table "watches", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "watches", id: :uuid do |t|
       t.uuid "card_id", null: false
       t.datetime "created_at", null: false
       t.datetime "updated_at", null: false
@@ -446,7 +446,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["user_id"], name: "index_watches_on_user_id"
     end
 
-    create_table "webhook_delinquency_trackers", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "webhook_delinquency_trackers", id: :uuid do |t|
       t.integer "consecutive_failures_count", default: 0
       t.datetime "created_at", null: false
       t.datetime "first_failure_at"
@@ -455,7 +455,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["webhook_id"], name: "index_webhook_delinquency_trackers_on_webhook_id"
     end
 
-    create_table "webhook_deliveries", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "webhook_deliveries", id: :uuid do |t|
       t.datetime "created_at", null: false
       t.uuid "event_id", null: false
       t.text "request"
@@ -467,7 +467,7 @@ class InitialSchema < ActiveRecord::Migration[8.2]
       t.index ["webhook_id"], name: "index_webhook_deliveries_on_webhook_id"
     end
 
-    create_table "webhooks", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+    create_table "webhooks", id: :uuid do |t|
       t.uuid "account_id"
       t.boolean "active", default: true, null: false
       t.uuid "board_id", null: false

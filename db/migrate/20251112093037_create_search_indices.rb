@@ -4,7 +4,7 @@ class CreateSearchIndices < ActiveRecord::Migration[8.2]
     return if connection.adapter_name == "SQLite"
 
     16.times do |i|
-      create_table "search_index_#{i}".to_sym, id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci" do |t|
+      create_table "search_index_#{i}".to_sym, id: :uuid do |t|
         t.string :searchable_type, null: false
         t.uuid :searchable_id, null: false
         t.uuid :card_id, null: false
