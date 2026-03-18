@@ -1,0 +1,38 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  url: <%= ENV["DATABASE_URL"] %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+
+development:
+  primary:
+    <<: *default
+  cable:
+    <<: *default
+    migrations_paths: db/cable_migrate
+  queue:
+    <<: *default
+    migrations_paths: db/queue_migrate
+  cache:
+    <<: *default
+    migrations_paths: db/cache_migrate
+
+test:
+  primary:
+    <<: *default
+  cable:
+    <<: *default
+    migrations_paths: db/cable_migrate
+
+production:
+  primary:
+    <<: *default
+  cable:
+    <<: *default
+    migrations_paths: db/cable_migrate
+  queue:
+    <<: *default
+    migrations_paths: db/queue_migrate
+  cache:
+    <<: *default
+    migrations_paths: db/cache_migrate
