@@ -6,8 +6,9 @@ class Sessions::OmniauthCallbacksController < ApplicationController
     auth = request.env["omniauth.auth"]
     email = auth&.info&.email&.strip&.downcase
 
-    if email.blank? || !email.end_with?("@zinovi.xyz")
-      redirect_to new_session_path, alert: "Sign-in is restricted to zinovi.xyz accounts."
+    allowed_domain = ENV.fetch("GOOGLE_HD", "gildra.xyz")
+    if email.blank? || !email.end_with?("@#{allowed_domain}")
+      redirect_to new_session_path, alert: "Sign-in is restricted to #{allowed_domain} accounts."
       return
     end
 
