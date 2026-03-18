@@ -1,21 +1,5 @@
 class InitialSchema < ActiveRecord::Migration[8.2]
   def change
-    # Drop all existing tables if they exist (handles partial migration state)
-    %w[
-      watches webhook_delinquency_trackers webhook_deliveries webhooks
-      user_settings taggings tags steps sessions search_results search_queries
-      reactions push_subscriptions pins notifications notification_bundles
-      mentions memberships magic_links identities filters_tags filters events
-      entropies creators_filters comments columns closures closers_filters
-      cards card_not_nows card_goldnesses card_engagements card_activity_spikes
-      boards_filters board_publications boards assignments assigners_filters
-      assignees_filters active_storage_variant_records active_storage_blobs
-      active_storage_attachments action_text_rich_texts accounts account_join_codes
-      account_external_id_sequences account_imports account_cancellations accesses
-    ].each do |table|
-      drop_table table, if_exists: true, force: :cascade
-    end
-
     create_table "accesses", id: :uuid do |t|
       t.datetime "accessed_at"
       t.uuid "board_id", null: false
