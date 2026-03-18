@@ -11,7 +11,7 @@ module Board::Accessible
       end
 
       def grant_to(users)
-        Access.insert_all Array(users).collect { |user| { id: ActiveRecord::Type::Uuid.generate, board_id: proxy_association.owner.id, user_id: user.id, account_id: proxy_association.owner.account.id } }
+        Access.insert_all Array(users).collect { |user| { id: SecureRandom.uuid, board_id: proxy_association.owner.id, user_id: user.id, account_id: proxy_association.owner.account.id } }
       end
 
       def revoke_from(users)
@@ -67,13 +67,11 @@ module Board::Accessible
       #
       # 1. Mention->Card
       # 2. Mention->Comment->Card
-      board_id_binary = ActiveRecord::Type::Uuid.new.serialize(id)
-
       user.mentions
         .joins("LEFT JOIN cards ON mentions.source_id = cards.id AND mentions.source_type = 'Card'")
         .joins("LEFT JOIN comments ON mentions.source_id = comments.id AND mentions.source_type = 'Comment'")
         .joins("LEFT JOIN cards AS comment_cards ON comments.card_id = comment_cards.id")
-        .where("(mentions.source_type = 'Card' AND cards.board_id = ?) OR (mentions.source_type = 'Comment' AND comment_cards.board_id = ?)", board_id_binary, board_id_binary)
+        .where("(mentions.source_type = 'Card' AND cards.board_id = ?) OR (mentions.source_type = 'Comment' AND comment_cards.board_id = ?)", id, id)
     end
 
     def notifications_for_user(user)
@@ -84,9 +82,6 @@ module Board::Accessible
       #
       # Notification->Event->Mention->Card and Notification->Event->Mention->Comment->Card are
       # handled by destroying mentions_for_user.
-      uuid_type = ActiveRecord::Type.lookup(:uuid, adapter: :trilogy)
-      board_id_binary = uuid_type.serialize(id)
-
       user.notifications
         .joins("LEFT JOIN events ON notifications.source_id = events.id AND notifications.source_type = 'Event'")
         .joins("LEFT JOIN cards AS event_cards ON events.eventable_id = event_cards.id AND events.eventable_type = 'Card'")
@@ -94,7 +89,7 @@ module Board::Accessible
         .joins("LEFT JOIN cards AS event_comment_cards ON event_comments.card_id = event_comment_cards.id")
         .where("(notifications.source_type = 'Event' AND events.eventable_type = 'Card' AND event_cards.board_id = ?) OR
               (notifications.source_type = 'Event' AND events.eventable_type = 'Comment' AND event_comment_cards.board_id = ?)",
-               board_id_binary, board_id_binary)
+               id, id)
     end
 
     def watches_for(user)
