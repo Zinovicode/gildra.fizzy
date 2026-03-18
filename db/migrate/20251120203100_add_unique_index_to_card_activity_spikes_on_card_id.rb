@@ -12,11 +12,9 @@ class AddUniqueIndexToCardActivitySpikesOnCardId < ActiveRecord::Migration[8.2]
         elsif ActiveRecord::Base.connection.adapter_name != "SQLite"
           execute <<-SQL
             DELETE FROM card_activity_spikes
-            WHERE id IN (
-              SELECT s1.id FROM card_activity_spikes s1
-              INNER JOIN card_activity_spikes s2
-              ON s1.card_id = s2.card_id AND s1.updated_at < s2.updated_at
-            )
+            USING card_activity_spikes s2
+            WHERE card_activity_spikes.card_id = s2.card_id
+            AND card_activity_spikes.updated_at < s2.updated_at
           SQL
         end
       end
