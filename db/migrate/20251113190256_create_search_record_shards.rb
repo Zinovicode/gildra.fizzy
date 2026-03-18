@@ -3,7 +3,7 @@ class CreateSearchRecordShards < ActiveRecord::Migration[8.2]
 
   def change
     # Skip for SQLite - it uses a single search_records table instead
-    return if connection.adapter_name == "SQLite"
+    return unless connection.adapter_name == "Trilogy"
 
     # Create 16 sharded search_records tables
     SHARD_COUNT.times do |shard_id|
