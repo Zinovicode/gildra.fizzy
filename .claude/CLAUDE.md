@@ -10,4 +10,4 @@ After the `writing-plans` skill saves a plan doc, **before the execution handoff
 
 > "Want me to create a Fizzy board with cards for this plan?"
 
-If yes, invoke the `fizzy-plan` skill (installed at `~/.claude/skills/fizzy-plan/SKILL.md`). Then proceed to the normal execution handoff.
+If yes, invoke the `fizzy-plan` skill. Then proceed to the normal execution handoff.
