@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_18_120000) do
+ActiveRecord::Schema[8.2].define(version: 2026_03_18_160000) do
   create_table "accesses", id: :uuid, force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -67,6 +67,22 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_18_120000) do
     t.string "name", null: false
     t.datetime "updated_at", null: false
     t.index ["external_account_id"], name: "index_accounts_on_external_account_id", unique: true
+  end
+
+  create_table "action_pack_passkeys", id: :uuid, force: :cascade do |t|
+    t.string "aaguid"
+    t.boolean "backed_up"
+    t.datetime "created_at", null: false
+    t.string "credential_id", null: false
+    t.uuid "holder_id", null: false
+    t.string "holder_type", null: false
+    t.string "name"
+    t.binary "public_key", null: false
+    t.integer "sign_count", default: 0, null: false
+    t.text "transports"
+    t.datetime "updated_at", null: false
+    t.index ["credential_id"], name: "index_action_pack_passkeys_on_credential_id", unique: true
+    t.index ["holder_type", "holder_id"], name: "index_action_pack_passkeys_on_holder_type_and_holder_id"
   end
 
   create_table "action_text_rich_texts", id: :uuid, force: :cascade do |t|
@@ -329,9 +345,11 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_18_120000) do
   create_table "identities", id: :uuid, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email_address", null: false
+    t.string "google_uid"
     t.boolean "staff", default: false, null: false
     t.datetime "updated_at", null: false
     t.index ["email_address"], name: "index_identities_on_email_address", unique: true
+    t.index ["google_uid"], name: "index_identities_on_google_uid", unique: true
   end
 
   create_table "identity_access_tokens", id: :uuid, force: :cascade do |t|

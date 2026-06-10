@@ -67,11 +67,19 @@ module Board::Accessible
       #
       # 1. Mention->Card
       # 2. Mention->Comment->Card
+      board_id_value = board_id_for_query
       user.mentions
         .joins("LEFT JOIN cards ON mentions.source_id = cards.id AND mentions.source_type = 'Card'")
         .joins("LEFT JOIN comments ON mentions.source_id = comments.id AND mentions.source_type = 'Comment'")
         .joins("LEFT JOIN cards AS comment_cards ON comments.card_id = comment_cards.id")
-        .where("(mentions.source_type = 'Card' AND cards.board_id = ?) OR (mentions.source_type = 'Comment' AND comment_cards.board_id = ?)", id, id)
+        .where("(mentions.source_type = 'Card' AND cards.board_id = ?) OR (mentions.source_type = 'Comment' AND comment_cards.board_id = ?)", board_id_value, board_id_value)
+    end
+
+    # Serialize our id the way the active adapter stores board_id columns so the
+    # raw SQL above matches (binary on Trilogy/MySQL, native uuid on PostgreSQL,
+    # string on SQLite). Passing the raw id only happens to work on PostgreSQL.
+    def board_id_for_query
+      Board.type_for_attribute("id").serialize(id)
     end
 
     def notifications_for_user(user)
@@ -82,6 +90,7 @@ module Board::Accessible
       #
       # Notification->Event->Mention->Card and Notification->Event->Mention->Comment->Card are
       # handled by destroying mentions_for_user.
+      board_id_value = board_id_for_query
       user.notifications
         .joins("LEFT JOIN events ON notifications.source_id = events.id AND notifications.source_type = 'Event'")
         .joins("LEFT JOIN cards AS event_cards ON events.eventable_id = event_cards.id AND events.eventable_type = 'Card'")
@@ -89,7 +98,7 @@ module Board::Accessible
         .joins("LEFT JOIN cards AS event_comment_cards ON event_comments.card_id = event_comment_cards.id")
         .where("(notifications.source_type = 'Event' AND events.eventable_type = 'Card' AND event_cards.board_id = ?) OR
               (notifications.source_type = 'Event' AND events.eventable_type = 'Comment' AND event_comment_cards.board_id = ?)",
-               id, id)
+               board_id_value, board_id_value)
     end
 
     def watches_for(user)
