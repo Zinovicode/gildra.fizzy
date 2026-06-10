@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_18_120000) do
+ActiveRecord::Schema[8.2].define(version: 2026_03_18_160000) do
   create_table "accesses", id: :uuid, force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -345,9 +345,11 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_18_120000) do
   create_table "identities", id: :uuid, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email_address", null: false
+    t.string "google_uid"
     t.boolean "staff", default: false, null: false
     t.datetime "updated_at", null: false
     t.index ["email_address"], name: "index_identities_on_email_address", unique: true
+    t.index ["google_uid"], name: "index_identities_on_google_uid", unique: true
   end
 
   create_table "identity_access_tokens", id: :uuid, force: :cascade do |t|
